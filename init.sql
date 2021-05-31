@@ -97,3 +97,5 @@ CREATE TABLE IF NOT EXISTS  `tasks`
 
 PRIMARY KEY (`id`)
 );
+
+INSERT INTO  tasks (id, channel_id, added_on) VALUES   (2, 'sadsadsad', NOW());

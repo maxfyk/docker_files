@@ -24,16 +24,36 @@ services:
     build: ../parer
     env_file:
       - .env
+    command: python3 parer.py
+    depends_on:
+      - redis
+    networks:
+      - network
+
+  parer_api:
+    build: ../parer_api
+    env_file:
+      - .env
     ports:
       - "5000:5000"
-    command: gunicorn --workers ${WORKERS} --bind 0.0.0.0:5000 --timeout 120 wsgi:app
+    command: gunicorn --workers ${API_WORKERS} --bind 0.0.0.0:5000 --timeout 120 wsgi:app
     stdin_open: true
     tty: true
     depends_on:
       - redis
     networks:
       - network
-
+  parer:
+    build: ../parer
+    env_file:
+      - .env
+    command: python3 parer.py
+    stdin_open: true
+    tty: true
+    depends_on:
+      - redis
+    networks:
+      - network
   get_tasks:
     build: ../get_tasks
     env_file:
