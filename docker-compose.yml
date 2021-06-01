@@ -63,6 +63,15 @@ services:
     command: python3 get_tasks.py runworker
     networks:
       - network
+  get_channels:
+    build: ../get_channels
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    command: python3 get_channels.py runworker
+    networks:
+      - network
 
   dashboard:
     build: ../rq_dashboard
