@@ -83,6 +83,43 @@ services:
     networks:
       - network
 
+  write_channels:
+    build: ../write_channels
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 write_channels.py runworker
+    networks:
+      - network
+
+  delete_task:
+    build: ../delete_task
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 delete_task.py runworker
+    networks:
+      - network
+
+  parse_channel:
+    build: ../parse_channel
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 parse_channel.py runworker
+    networks:
+      - network
+
+
   dashboard:
     build: ../rq_dashboard
     ports:
