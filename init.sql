@@ -11,7 +11,7 @@ USE youpar;
 CREATE TABLE IF NOT EXISTS `channels`
 (
  `id`                 varchar(20) NOT NULL ,
- `titile`             varchar(20) NOT NULL ,
+ `title`             varchar(20) NOT NULL ,
  `description`        varchar(5000) NOT NULL ,
  `custom_url`         varchar(100) NOT NULL ,
  `published_at`       datetime NOT NULL ,

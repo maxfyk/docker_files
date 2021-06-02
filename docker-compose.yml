@@ -38,6 +38,8 @@ services:
       - "5000:5000"
     command: gunicorn --workers ${API_WORKERS} --bind 0.0.0.0:5000 --timeout 120 wsgi:app
     stdin_open: true
+    volumes:
+      - ./methods/:/usr/src/app/methods/
     tty: true
     depends_on:
       - redis
@@ -50,25 +52,33 @@ services:
     command: python3 parer.py
     stdin_open: true
     tty: true
+    volumes:
+      - ./methods/:/usr/src/app/methods/
     depends_on:
       - redis
     networks:
       - network
+
   get_tasks:
     build: ../get_tasks
     env_file:
       - .env
     depends_on:
       - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
     command: python3 get_tasks.py runworker
     networks:
       - network
+
   get_channels:
     build: ../get_channels
     env_file:
       - .env
     depends_on:
       - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
     command: python3 get_channels.py runworker
     networks:
       - network
