@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import MySQLdb
 from redis import Redis
 
@@ -26,3 +27,12 @@ def get_redis():
         print(error)
         sys.exit("Error: Faild connecting to redis")
     return redis
+
+
+def await_job(job, t=60):
+    """Waits for job to be done"""
+    for i in range(t):
+        if job.result is None:
+            time.sleep(1)
+        else:
+            pass
