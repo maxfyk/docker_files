@@ -1,10 +1,11 @@
-version: '3'
+version: '2.1'
 
 services:
   chromedriver:
     image: selenium/standalone-chrome
     privileged: true
     shm_size: 2g
+    restart: always
     ports:
       - "4444:4444"
     networks:
@@ -22,19 +23,41 @@ services:
       MYSQL_ROOT_HOST: '%'
     networks:
       - network
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 1s
+      timeout: 3s
+      retries: 60
+
   redis:
     image: redis
+    restart: always
+    networks:
+      - network
+
+  parer:
+    build: ../parer
+    restart: always
+    env_file:
+      - .env
+    command: python3 parer.py
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./methods/:/usr/src/app/methods/
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     networks:
       - network
 
   parer_api:
     build: ../parer_api
+    restart: always
     env_file:
       - .env
     ports:
-      - "5000:5000"
+      - "15000:5000"
     command: gunicorn --workers ${API_WORKERS} --bind 0.0.0.0:5000 --timeout 120 wsgi:app
     stdin_open: true
     volumes:
@@ -44,23 +67,10 @@ services:
       - parer
     networks:
       - network
-  parer:
-    build: ../parer
-    env_file:
-      - .env
-    command: python3 parer.py
-    stdin_open: true
-    tty: true
-    volumes:
-      - ./methods/:/usr/src/app/methods/
-    depends_on:
-      - redis
-      - chromedriver
-    networks:
-      - network
 
   get_tasks:
     build: ../get_tasks
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -73,6 +83,7 @@ services:
 
   get_channels:
     build: ../get_channels
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -85,6 +96,7 @@ services:
 
   write_channels:
     build: ../write_channels
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -95,8 +107,22 @@ services:
     networks:
       - network
 
+  write_tmp_table:
+    build: ../write_tmp_table
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 write_tmp_table.py runworker
+    networks:
+      - network
+
   delete_task:
     build: ../delete_task
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -109,6 +135,7 @@ services:
 
   parse_channel:
     build: ../parse_channel
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -123,6 +150,7 @@ services:
 
   create_tmp_table:
     build: ../create_tmp_table
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -138,6 +166,7 @@ services:
 # Delete tmp table
   get_tmp_table:
     build: ../get_tmp_table
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -152,6 +181,7 @@ services:
 
   dashboard:
     build: ../rq_dashboard
+    restart: always
     ports:
       - "9181:9181"
     command: rq-dashboard -H redis

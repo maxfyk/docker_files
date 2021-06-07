@@ -4,16 +4,18 @@
 
 -- --------------------------------------------------------
 
-
-
 CREATE DATABASE IF NOT EXISTS youpar;
 
 USE youpar;
 
+SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
+    AS statement FROM information_schema.tables
+    WHERE table_name LIKE '_tmp%';
+
 CREATE TABLE IF NOT EXISTS `channels`
 (
- `id`                 varchar(20)  NOT NULL,
- `title`             varchar(20)  ,
+ `id`                varchar(30)  NOT NULL,
+ `title`             varchar(30)  ,
  `description`        varchar(5000)  ,
  `custom_url`         varchar(100)  ,
  `published_at`       datetime  ,
@@ -30,14 +32,14 @@ PRIMARY KEY (`id`)
 
 CREATE TABLE IF NOT EXISTS `videos`
 (
- `id`               varchar(20) NOT NULL,
+ `id`               varchar(30) NOT NULL,
  `title`            varchar(100)  ,
  `views`            int  ,
  `likes`            int ,
  `dislikes`         int ,
  `comments`         int  ,
  `description`      varchar(5000) ,
- `channel_id`       varchar(20)  ,
+ `channel_id`       varchar(30)  ,
  `duration`         int  ,
  `published_at`     datetime  ,
  `tags`             varchar(5000)  ,
@@ -52,7 +54,7 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS `videos_history`
 (
  `id`          int  NOT NULL,
- `clip_id`     varchar(20)  ,
+ `clip_id`     varchar(30)  ,
  `views`       int  ,
  `likes`       int  ,
  `dislikes`    int  ,
@@ -64,13 +66,13 @@ PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `comments`
 (
- `id`                varchar(20)  NOT NULL,
- `video_id`          varchar(20)  ,
- `channel_id`        varchar(20)  ,
+ `id`                varchar(30)  NOT NULL,
+ `video_id`          varchar(30)  ,
+ `channel_id`        varchar(30)  ,
  `author_name`       varchar(100)  ,
- `author_channel_id` varchar(20)  ,
+ `author_channel_id` varchar(30)  ,
  `text`              varchar(10000)  ,
- `parent_id`         varchar(20)  ,
+ `parent_id`         varchar(30)  ,
  `can_rate`          bit  ,
  `likes`             int  ,
  `viewer_rating`     varchar(50)  ,
@@ -94,10 +96,8 @@ PRIMARY KEY (`id`)
 CREATE TABLE IF NOT EXISTS  `tasks`
 (
  `id`         int  NOT NULL,
- `channel_id` varchar(20)  ,
+ `channel_id` varchar(30)  ,
  `added_on` datetime  ,
 
 PRIMARY KEY (`id`)
 );
-
-INSERT INTO  tasks (id, channel_id, added_on) VALUES   (2, 'sadsadsad', NOW());
