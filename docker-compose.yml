@@ -35,6 +35,18 @@ services:
     networks:
       - network
 
+  dashboard:
+    build: ../rq_dashboard
+    restart: always
+    ports:
+      - "9181:9181"
+    command: rq-dashboard -H redis
+    depends_on:
+      - parer
+      - redis
+    networks:
+      - network
+
   parer:
     build: ../parer
     restart: always
@@ -48,6 +60,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - network
 
@@ -65,6 +79,7 @@ services:
     tty: true
     depends_on:
       - parer
+      - redis
     networks:
       - network
 
@@ -75,6 +90,7 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 get_tasks.py runworker
@@ -88,6 +104,7 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 get_channels.py runworker
@@ -101,6 +118,7 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 write_channels.py runworker
@@ -114,6 +132,7 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 write_tmp_table.py runworker
@@ -127,6 +146,7 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 delete_task.py runworker
@@ -140,11 +160,40 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 parse_channel.py runworker
     links:
       - chromedriver
+    networks:
+      - network
+
+  enqueue_channel:
+    build: ../enqueue_channel
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 enqueue_channel.py runworker
+    networks:
+      - network
+
+  enqueue_video:
+    build: ../enqueue_video
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 enqueue_video.py runworker
     networks:
       - network
 
@@ -155,15 +204,27 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 create_tmp_table.py runworker
-    links:
-      - chromedriver
     networks:
       - network
 
-# Delete tmp table
+  delete_tmp_table:
+    build: ../delete_tmp_table
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 delete_tmp_table.py runworker
+    networks:
+      - network
+
   get_tmp_table:
     build: ../get_tmp_table
     restart: always
@@ -171,24 +232,28 @@ services:
       - .env
     depends_on:
       - parer
+      - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 get_tmp_table.py runworker
-    links:
-      - chromedriver
     networks:
       - network
 
-  dashboard:
-    build: ../rq_dashboard
+  update_channels:
+    build: ../update_channels
     restart: always
-    ports:
-      - "9181:9181"
-    command: rq-dashboard -H redis
+    env_file:
+      - .env
     depends_on:
       - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 update_channels.py runworker
     networks:
       - network
+
+
 
 networks:
   network: {}
