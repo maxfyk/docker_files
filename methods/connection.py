@@ -37,5 +37,3 @@ def await_job(job, t=60):
     for i in range(t):
         if job.result is None:
             time.sleep(1)
-        else:
-            pass

@@ -97,6 +97,34 @@ services:
     networks:
       - network
 
+  get_videos:
+    build: ../get_videos
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 get_videos.py runworker
+    networks:
+      - network
+
+  write_videos:
+    build: ../write_videos
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 write_videos.py runworker
+    networks:
+      - network
+
   get_channels:
     build: ../get_channels
     restart: always
@@ -108,6 +136,20 @@ services:
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 get_channels.py runworker
+    networks:
+      - network
+
+  update_videos:
+    build: ../update_videos
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 update_videos.py runworker
     networks:
       - network
 
@@ -164,6 +206,22 @@ services:
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 parse_channel.py runworker
+    links:
+      - chromedriver
+    networks:
+      - network
+
+  parse_video:
+    build: ../parse_video
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 parse_video.py runworker
     links:
       - chromedriver
     networks:

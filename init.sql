@@ -3,7 +3,6 @@
 --
 
 -- --------------------------------------------------------
-
 CREATE DATABASE IF NOT EXISTS youpar;
 
 USE youpar;
@@ -53,14 +52,13 @@ PRIMARY KEY (`id`)
 
 CREATE TABLE IF NOT EXISTS `videos_history`
 (
- `id`          int  NOT NULL,
- `clip_id`     varchar(30)  ,
+ `id`          int  NOT NULL AUTO_INCREMENT,
+ `video_id`    varchar(30)  ,
  `views`       int  ,
  `likes`       int  ,
  `dislikes`    int  ,
  `comments`    int  ,
- `change_date` datetime  ,
- `time`        datetime  ,
+ `update_time` datetime  ,
 
 PRIMARY KEY (`id`)
 );
