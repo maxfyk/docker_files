@@ -125,6 +125,34 @@ services:
     networks:
       - network
 
+  write_comment:
+    build: ../write_comment
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 write_comment.py runworker
+    networks:
+      - network
+
+  get_comment:
+    build: ../get_comment
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 get_comment.py runworker
+    networks:
+      - network
+
   get_channels:
     build: ../get_channels
     restart: always
@@ -150,6 +178,34 @@ services:
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 update_videos.py runworker
+    networks:
+      - network
+
+  update_comment:
+    build: ../update_comment
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 update_comment.py runworker
+    networks:
+      - network
+
+  delete_comment:
+    build: ../delete_comment
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 delete_comment.py runworker
     networks:
       - network
 
