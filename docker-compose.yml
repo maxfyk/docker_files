@@ -139,8 +139,8 @@ services:
     networks:
       - network
 
-  get_comment:
-    build: ../get_comment
+  get_comments:
+    build: ../get_comments
     restart: always
     env_file:
       - .env
@@ -149,7 +149,7 @@ services:
       - redis
     volumes:
       - ./methods/:/usr/src/app/methods/
-    command: python3 get_comment.py runworker
+    command: python3 get_comments.py runworker
     networks:
       - network
 
