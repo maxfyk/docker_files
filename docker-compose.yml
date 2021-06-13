@@ -35,17 +35,17 @@ services:
     networks:
       - network
 
-  dashboard:
-    build: ../rq_dashboard
-    restart: always
-    ports:
-      - "9181:9181"
-    command: rq-dashboard -H redis
-    depends_on:
-      - parer
-      - redis
-    networks:
-      - network
+#  dashboard:
+#    build: ../rq_dashboard
+#    restart: always
+#    ports:
+#      - "9181:9181"
+#    command: rq-dashboard -H redis
+#    depends_on:
+#      - parer
+#      - redis
+#    networks:
+#      - network
 
   parer:
     build: ../parer
@@ -71,7 +71,7 @@ services:
     env_file:
       - .env
     ports:
-      - "15000:5000"
+      - "5000:5000"
     command: gunicorn --workers ${API_WORKERS} --bind 0.0.0.0:5000 --timeout 120 wsgi:app
     stdin_open: true
     volumes:
