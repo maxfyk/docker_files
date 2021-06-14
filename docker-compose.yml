@@ -1,15 +1,6 @@
 version: '2.1'
 
 services:
-  chromedriver:
-    image: selenium/standalone-chrome
-    privileged: true
-    shm_size: 2g
-    restart: always
-    ports:
-      - "4444:4444"
-    networks:
-      - network
 
   database:
     image: ivonet/mysql
@@ -262,8 +253,6 @@ services:
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 parse_channel.py runworker
-    links:
-      - chromedriver
     networks:
       - network
 
@@ -278,8 +267,6 @@ services:
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 parse_video.py runworker
-    links:
-      - chromedriver
     networks:
       - network
 

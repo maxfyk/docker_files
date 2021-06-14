@@ -70,12 +70,10 @@ CREATE TABLE IF NOT EXISTS `comments`
  `author_name`       varchar(100)  ,
  `author_channel_id` varchar(30)  ,
  `text`              varchar(10000)  ,
- `parent_id`         varchar(30)  ,
- `can_rate`          bit  ,
  `likes`             int  ,
+ `replies`             int  ,
  `viewer_rating`     varchar(50)  ,
  `published_at`      datetime  ,
- `updated_at`        datetime  ,
  `time`              datetime  ,
 
 PRIMARY KEY (`id`)
