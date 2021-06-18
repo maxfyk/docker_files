@@ -3,9 +3,12 @@
 --
 
 -- --------------------------------------------------------
-CREATE DATABASE IF NOT EXISTS youpar;
+CREATE DATABASE IF NOT EXISTS youpar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE youpar;
+SET GLOBAL max_connections = 1024;
+SET GLOBAL max_allowed_packet = 1024 * 1024 * 256;
+
 
 SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
     AS statement FROM information_schema.tables
@@ -17,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `channels`
  `title`             varchar(30)  ,
  `description`        varchar(5000)  ,
  `custom_url`         varchar(100)  ,
- `published_at`       datetime  ,
+ `published_at`       varchar(250)  ,
  `default_language`   varchar(100)  ,
  `views`              int,
  `subscribers`        int,
@@ -39,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `videos`
  `comments`         int  ,
  `description`      varchar(5000) ,
  `channel_id`       varchar(30)  ,
- `duration`         int  ,
- `published_at`     datetime  ,
+ `duration`         varchar(50)  ,
+ `published_at`     varchar(250)  ,
  `tags`             varchar(5000)  ,
  `default_language` varchar(100)  ,
  `made_for_kids`    bit  ,
@@ -73,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `comments`
  `likes`             int  ,
  `replies`             int  ,
  `viewer_rating`     varchar(50)  ,
- `published_at`      datetime  ,
+ `published_at`      varchar(250)  ,
  `time`              datetime  ,
 
 PRIMARY KEY (`id`)
@@ -91,7 +94,7 @@ PRIMARY KEY (`id`)
 
 CREATE TABLE IF NOT EXISTS  `tasks`
 (
- `id`         int  NOT NULL,
+ `id`         int  NOT NULL AUTO_INCREMENT,
  `channel_id` varchar(30)  ,
  `added_on` datetime  ,
 

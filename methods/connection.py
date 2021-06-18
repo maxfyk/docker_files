@@ -12,7 +12,9 @@ def get_cursor():
         mydb = MySQLdb.connect(
             host="database",
             password=os.environ['MYSQL_ROOT_PASS'],
-            database='youpar'
+            database='youpar',
+            charset='utf8mb4',
+            use_unicode=True
         )
     except MySQLdb.Error as error:
         print(error)

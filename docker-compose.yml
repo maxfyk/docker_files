@@ -130,6 +130,20 @@ services:
     networks:
       - network
 
+  write_tasks:
+    build: ../write_tasks
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 write_tasks.py runworker
+    networks:
+      - network
+
   get_comments:
     build: ../get_comments
     restart: always
