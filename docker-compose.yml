@@ -15,7 +15,7 @@ services:
     networks:
       - network
     healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      test: mysql --user=root --password=$$MYSQL_ROOT_PASSWORD -e 'SHOW DATABASES;'
       interval: 1s
       timeout: 3s
       retries: 60
