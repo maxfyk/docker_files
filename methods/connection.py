@@ -36,6 +36,7 @@ def get_redis():
 
 def await_job(job, t=60):
     """Waits for job to be done"""
+    t = t * 10
     for i in range(t):
         if job.result is None:
-            time.sleep(1)
+            time.sleep(0.1)

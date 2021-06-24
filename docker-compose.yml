@@ -6,12 +6,14 @@ services:
     image: ivonet/mysql
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../data/db:/var/lib/mysql
     restart: always
     ports:
       - "13306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
       MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE:  youpar
     networks:
       - network
     healthcheck:
@@ -99,6 +101,20 @@ services:
     volumes:
       - ./methods/:/usr/src/app/methods/
     command: python3 get_videos.py runworker
+    networks:
+      - network
+
+  get_tables:
+    build: ../get_tables
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - parer
+      - redis
+    volumes:
+      - ./methods/:/usr/src/app/methods/
+    command: python3 get_tables.py runworker
     networks:
       - network
 
