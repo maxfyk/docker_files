@@ -22,6 +22,28 @@ services:
       timeout: 3s
       retries: 60
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ../data/elastic:/usr/share/elasticsearch/data
+    networks:
+      - network
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.4.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - network
+
   redis:
     image: redis
     restart: always
@@ -54,6 +76,8 @@ services:
       database:
         condition: service_healthy
       redis:
+        condition: service_started
+      elasticsearch:
         condition: service_started
     networks:
       - network
